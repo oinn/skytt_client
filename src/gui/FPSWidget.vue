@@ -9,7 +9,7 @@ export default defineComponent({
   name: 'FPSWidget',
   computed: {
     fPSString(): string {
-      return `FPS: ${this.$store.state.fPSCounter}`;
+      return `${this.$store.state.fPSCounter} fps`;
     }
   }
 });
