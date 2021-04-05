@@ -6,6 +6,7 @@ import {
   WebGLRenderer
 } from 'three';
 import GControls from '@/classes/GControls';
+import FPSMeter from '@/classes/FPSMeter';
 
 export default class GRenderer extends WebGLRenderer {
   scene: Scene;
@@ -13,6 +14,8 @@ export default class GRenderer extends WebGLRenderer {
   camera: Camera;
 
   controls: GControls;
+
+  fPSMeter: FPSMeter;
 
   constructor(element: HTMLElement, scene: Scene, camera: Camera, controls: GControls) {
     super({ antialias: true });
@@ -30,6 +33,8 @@ export default class GRenderer extends WebGLRenderer {
     this.shadowMap.type = PCFShadowMap;
 
     this.controls = controls;
+
+    this.fPSMeter = new FPSMeter();
   }
 
   updateSize(): void {
@@ -51,6 +56,8 @@ export default class GRenderer extends WebGLRenderer {
     requestAnimationFrame(this.animate.bind(this));
 
     this.controls.animate();
+
+    this.fPSMeter.calc();
 
     this.render(this.scene, this.camera);
   }
