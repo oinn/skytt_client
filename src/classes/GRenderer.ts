@@ -5,13 +5,16 @@ import {
   Scene,
   WebGLRenderer
 } from 'three';
+import GControls from '@/classes/GControls';
 
 export default class GRenderer extends WebGLRenderer {
   scene: Scene;
 
   camera: Camera;
 
-  constructor(element: HTMLElement, scene: Scene, camera: Camera) {
+  controls: GControls;
+
+  constructor(element: HTMLElement, scene: Scene, camera: Camera, controls: GControls) {
     super({ antialias: true });
 
     this.scene = scene;
@@ -25,6 +28,8 @@ export default class GRenderer extends WebGLRenderer {
     this.setPixelRatio(window.devicePixelRatio);
     this.shadowMap.enabled = true;
     this.shadowMap.type = PCFShadowMap;
+
+    this.controls = controls;
   }
 
   updateSize(): void {
@@ -44,6 +49,8 @@ export default class GRenderer extends WebGLRenderer {
 
   animate(): void {
     requestAnimationFrame(this.animate.bind(this));
+
+    this.controls.animate();
 
     this.render(this.scene, this.camera);
   }

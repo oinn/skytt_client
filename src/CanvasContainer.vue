@@ -1,5 +1,5 @@
 <template>
-  <div id="canvas-container"/>
+  <div id="canvas-container" @click="lockControls"/>
 </template>
 
 <script lang="ts">
@@ -7,9 +7,13 @@ import { defineComponent } from 'vue';
 import { PerspectiveCamera } from 'three';
 import TestArea from '@/canvas/scenes/TestArea';
 import GRenderer from '@/classes/GRenderer';
+import GControls from '@/classes/GControls';
 
 export default defineComponent({
   name: 'CanvasContainer',
+  data: () => ({
+    controls: undefined as GControls | undefined
+  }),
   mounted() {
     const scene = TestArea;
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -17,9 +21,17 @@ export default defineComponent({
     camera.position.y = 1.7;
     camera.position.z = 5;
 
-    const renderer = new GRenderer(this.$el, scene, camera);
+    this.controls = new GControls(camera, this.$el);
+
+    const renderer = new GRenderer(this.$el, scene, camera, this.controls);
 
     renderer.animate();
+  },
+  methods: {
+    lockControls(): void {
+      // eslint-disable-next-line no-unused-expressions
+      this.controls?.lock();
+    }
   }
 });
 </script>
