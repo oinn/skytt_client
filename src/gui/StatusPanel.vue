@@ -2,16 +2,18 @@
   <div id="status-panel">
     <div class="spacer"/>
     <FPSWidget/>
+    <PingWidget/>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FPSWidget from '@/gui/FPSWidget.vue';
+import PingWidget from '@/gui/PingWidget.vue';
 
 export default defineComponent({
   name: 'StatusPanel',
-  components: { FPSWidget }
+  components: { PingWidget, FPSWidget }
 });
 </script>
 
