@@ -1,5 +1,7 @@
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:4040', { transports: ['websocket'] });
+const { hostname, protocol } = window.location;
+
+const socket = io(`${protocol}//${hostname}:4040`, { transports: ['websocket'] });
 
 export default socket;
