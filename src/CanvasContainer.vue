@@ -11,9 +11,11 @@ import GControls from '@/classes/GControls';
 
 export default defineComponent({
   name: 'CanvasContainer',
-  data: () => ({
-    controls: undefined as GControls | undefined
-  }),
+  data() {
+    return {
+      controls: undefined as GControls | undefined
+    };
+  },
   mounted() {
     const scene = TestArea;
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -23,9 +25,12 @@ export default defineComponent({
 
     this.controls = new GControls(camera, this.$el);
 
-    const renderer = new GRenderer(this.$el, scene, camera, this.controls);
+    const renderer = new GRenderer(this.$el, scene, camera);
+    this.$store.commit('setRenderer', renderer);
 
-    renderer.animate();
+    renderer.addAnimation(this.controls.animation);
+
+    renderer.render();
   },
   methods: {
     lockControls(): void {

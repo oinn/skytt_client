@@ -1,13 +1,14 @@
 import { IState } from '@/store/state';
 import { MutationTree } from 'vuex';
+import GRenderer from '@/classes/GRenderer';
 
 export interface IMutations {
-  setFPSCounter(state: IState, value: number): void;
+  setRenderer(state: IState, renderer: GRenderer | undefined): void;
 }
 
 const mutations: MutationTree<IState> & IMutations = {
-  setFPSCounter(state: IState, value: number) {
-    state.fPSCounter = value;
+  setRenderer(state: IState, renderer: GRenderer | undefined) {
+    state.renderer = renderer;
   }
 };
 

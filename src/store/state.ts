@@ -1,9 +1,11 @@
+import GRenderer from '@/classes/GRenderer';
+
 export interface IState {
-  fPSCounter: number;
+  renderer: undefined | GRenderer;
 }
 
 const state: IState = {
-  fPSCounter: 0
+  renderer: undefined
 };
 
 export default state;
