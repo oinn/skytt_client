@@ -25,11 +25,11 @@ export default class GControls {
     });
   }
 
-  lock(): void {
+  public lock(): void {
     this.controls.lock();
   }
 
-  animate(): void {
+  public animation = (): void => {
     if (this.keys.KeyW)
       this.controls.moveForward(0.2);
     if (this.keys.KeyS)
