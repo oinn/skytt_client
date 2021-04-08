@@ -1,64 +1,71 @@
 import {
   Camera,
   PCFShadowMap,
-  PerspectiveCamera,
   Scene,
   WebGLRenderer
 } from 'three';
-import GControls from '@/classes/GControls';
-import FPSMeter from '@/classes/FPSMeter';
 
-export default class GRenderer extends WebGLRenderer {
-  scene: Scene;
+interface IAnimationItem {
+  readonly id: number;
+  animation: () => void;
+}
 
-  camera: Camera;
+export default class GRenderer {
+  private renderer: WebGLRenderer;
 
-  controls: GControls;
+  private readonly scene: Scene;
 
-  fPSMeter: FPSMeter;
+  private readonly camera: Camera;
 
-  constructor(element: HTMLElement, scene: Scene, camera: Camera, controls: GControls) {
-    super({ antialias: true });
+  private animationItemsIdCounter = 0;
 
+  private animationItems: Array<IAnimationItem> = [];
+
+  constructor(element: HTMLElement, scene: Scene, camera: Camera) {
     this.scene = scene;
     this.camera = camera;
 
-    element.appendChild(this.domElement);
+    this.renderer = new WebGLRenderer({ antialias: true });
+
+    element.appendChild(this.renderer.domElement);
+
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = PCFShadowMap;
 
     this.updateSize();
     window.addEventListener('resize', this.updateSize.bind(this));
-
-    this.setPixelRatio(window.devicePixelRatio);
-    this.shadowMap.enabled = true;
-    this.shadowMap.type = PCFShadowMap;
-
-    this.controls = controls;
-
-    this.fPSMeter = new FPSMeter();
   }
 
-  updateSize(): void {
-    const { parentElement } = this.domElement;
-    if (parentElement) {
-      const width = parentElement.clientWidth;
-      const height = parentElement.clientHeight;
+  private updateSize(): void {
+    const { parentElement } = this.renderer.domElement;
 
-      this.setSize(width, height);
-
-      if (this.camera instanceof PerspectiveCamera) {
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-      }
-    }
+    if (parentElement)
+      this.renderer.setSize(parentElement.clientWidth, parentElement.clientHeight);
   }
 
-  animate(): void {
-    requestAnimationFrame(this.animate.bind(this));
+  public addAnimation(animation: () => void): number {
+    this.animationItemsIdCounter += 1;
+    this.animationItems.push({
+      id: this.animationItemsIdCounter,
+      animation
+    });
+    return this.animationItemsIdCounter;
+  }
 
-    this.controls.animate();
+  public removeAnimation(animationItemId: number): void {
+    const animationItemIndex = this.animationItems
+      .findIndex((animationItem) => animationItem.id === animationItemId);
 
-    this.fPSMeter.calc();
+    if (animationItemIndex >= 0)
+      this.animationItems.splice(animationItemIndex, 1);
+  }
 
-    this.render(this.scene, this.camera);
+  public render(): void {
+    requestAnimationFrame(this.render.bind(this));
+
+    this.animationItems.forEach((animationItem) => animationItem.animation());
+
+    this.renderer.render(this.scene, this.camera);
   }
 }
